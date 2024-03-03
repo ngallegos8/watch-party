@@ -6,11 +6,11 @@ function NavBar(){
         <nav class="navbar">
             <Link to="/">  Home    </Link>
             
-            <Link to="/">  User    </Link>
+            <Link to="/User">  User    </Link>
             
-            <Link to="/">  Event    </Link>
+            <Link to="/Event">  Event    </Link>
             
-            <Link to="/">  Venue    </Link>
+            <Link to="/Venue">  Venue    </Link>
             
             
         </nav>
