@@ -3,7 +3,7 @@ import {Link,useParams} from "react-router-dom";
 function NavBar(){
     return(
      <div>
-        <nav class="navbar">
+        <nav clasname="navbar">
             <Link to="/">  Home    </Link>
             
             <Link to="/User">  User    </Link>

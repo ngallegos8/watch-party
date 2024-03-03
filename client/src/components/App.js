@@ -2,17 +2,29 @@ import React, { useEffect, useState } from "react";
 import { Switch, Route, Routes, createBrowserRoute, RouterProvider, BrowserRouter } from "react-router-dom";
 import NavBar from './navBar'
 import User from './User'
+import Event from './Event'
+import Venue from'./Venue'
 
 function App() {
   return(
     <BrowserRouter>
       <NavBar/>
-      <main>
-        <Route path="/User" element={<User/>}/>
-        <Route path="/Venue" element={<User/>}/>
-        <Route path="/Event" element={<User/>}/>
+  
+    
+          <Switch>
+          <Route exact path="/User">
+            <User/>
+          </Route>
+          <Route exact path="/Venue">
+            <Venue/>
+          </Route>
+          <Route exact path="/Event">
+            <Event />
+          </Route>
+          <Route path="/"></Route>
+          </Switch>
+     
         
-      </main>
 
     </BrowserRouter>
 
