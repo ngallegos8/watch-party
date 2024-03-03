@@ -32,9 +32,12 @@ class User(db.Model,SerializerMixin):
     created_at = db.Column(db.DateTime, server_default=db.func.now())
     updated_at = db.Column(db.DateTime, onupdate=db.func.now())
 
+<<<<<<< HEAD
     events_attending = db.relationship('Event', secondary='attendance', back_populates='attendees')
     serialize_rules = ('-events_attending.attendees', )
 
+=======
+>>>>>>> jeff
     #) Create a get method using hybrid property, and bcrypt
     @hybrid_property
     def password_hash(self):
