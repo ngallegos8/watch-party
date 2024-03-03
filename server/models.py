@@ -30,6 +30,7 @@ class User(db.Model,SerializerMixin):
     created_at = db.Column(db.DateTime, server_default=db.func.now())
     updated_at = db.Column(db.DateTime, onupdate=db.func.now())
 
+<<<<<<< HEAD
     #) Create a get method using hybrid property, and bcrypt
     @hybrid_property
     def password_hash(self):
@@ -132,3 +133,9 @@ class Event(db.Model, SerializerMixin):
 
     # # Create a new event
     # new_event = Event(name="Super Bowl Watch Party", date_time=datetime(2023, 2, 12, 18, 30), location="My House", description="Come watch the Super Bowl!", user=current_user)
+=======
+class User():
+    
+
+    
+>>>>>>> jeff
