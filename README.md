@@ -6,6 +6,7 @@ push from jeffs branch!
 # Phase 4 Full-Stack Application Project Template
 
 ## Learning Goals
+NICK TESTING 2
 
 - Discuss the basic directory structure of a full-stack Flask/React application.
 - Carry out the first steps in creating your Phase 4 project.
