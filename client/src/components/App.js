@@ -1,8 +1,17 @@
 import React, { useEffect, useState } from "react";
-import { Switch, Route } from "react-router-dom";
+import { Switch, Route, createBrowserRoute, RouterProvider, BrowserRouter } from "react-router-dom";
+import NavBar from './navBar'
 
 function App() {
-  return <h1>Project Client</h1>;
+  return(
+    <BrowserRouter>
+      <NavBar/>
+
+    </BrowserRouter>
+
+
+  );
+
 }
 
-export default App;
+export default App

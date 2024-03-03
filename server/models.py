@@ -12,6 +12,6 @@ db = SQLAlchemy(metadata=metadata)
 
 
 class User():
-    pass
+    
 
-    ##
+    
