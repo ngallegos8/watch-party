@@ -5,9 +5,10 @@ from sqlalchemy import MetaData
 from sqlalchemy_serializer import SerializerMixin
 from sqlalchemy.ext.hybrid import hybrid_property
 from flask_bcrypt import Bcrypt
-import requests
+
 
 #) NEED TO ADD FOR ADDRESS VALIDATION
+# import requests
 # GOOGLE_MAPS_API_KEY = 'YOUR_GOOGLE_MAPS_API_KEY'
 
 bcrypt = Bcrypt()
@@ -50,12 +51,13 @@ class User(db.Model,SerializerMixin):
     def authenticate(self, password):
         return bcrypt.check_password_hash(self.password_hash, password.encode("utf-8"))
     
-    @validates('username')
-    def validate_username(self, key, value):
-        if(1 < len(value)):
-            return value
-        else:
-            raise ValueError("Username must be greater than 1 character")
+    #) VALIDATIONS
+    # @validates('username')
+    # def validate_username(self, key, value):
+    #     if(1 < len(value)):
+    #         return value
+    #     else:
+    #         raise ValueError("Username must be greater than 1 character")
     
 
 
@@ -88,35 +90,37 @@ class Venue(db.Model, SerializerMixin):
     def authenticate(self, password):
         return bcrypt.check_password_hash(self.password_hash, password.encode("utf-8"))
     
-    @validates('username')
-    def validate_username(self, key, value):
-        if(1 < len(value)):
-            return value
-        else:
-            raise ValueError("Username must be greater than 1 character")
-    
-    @staticmethod
-    def is_valid_address(address):
-        google_maps_api_key = 'YOUR_GOOGLE_MAPS_API_KEY'
-        response = requests.get(
-            'https://maps.googleapis.com/maps/api/geocode/json',
-            params={
-                'address': address,
-                'key': google_maps_api_key
-            }
-        )
-        if response.status_code == 200:
-            result = response.json()
-            if result['status'] == 'OK':
-                return True
-        return False
 
-    @validates('location')
-    def validate_location(self, key, value):
-        if self.is_valid_address(value):
-            return value
-        else:
-            raise ValueError("Invalid address")
+        #) VALIDATIONS
+    # @validates('username')
+    # def validate_username(self, key, value):
+    #     if(1 < len(value)):
+    #         return value
+    #     else:
+    #         raise ValueError("Username must be greater than 1 character")
+    
+    # @staticmethod
+    # def is_valid_address(address):
+    #     google_maps_api_key = 'YOUR_GOOGLE_MAPS_API_KEY'
+    #     response = requests.get(
+    #         'https://maps.googleapis.com/maps/api/geocode/json',
+    #         params={
+    #             'address': address,
+    #             'key': google_maps_api_key
+    #         }
+    #     )
+    #     if response.status_code == 200:
+    #         result = response.json()
+    #         if result['status'] == 'OK':
+    #             return True
+    #     return False
+
+    # @validates('location')
+    # def validate_location(self, key, value):
+    #     if self.is_valid_address(value):
+    #         return value
+    #     else:
+    #         raise ValueError("Invalid address")
         
     
 
@@ -124,8 +128,8 @@ class Venue(db.Model, SerializerMixin):
 
 class Attendance(db.Model, SerializerMixin):
     __tablename__ = 'attendees'
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key=True)
-    venue_id = db.Column(db.Integer, db.ForeignKey('venue.id'), primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), primary_key=True)
+    venue_id = db.Column(db.Integer, db.ForeignKey('venues.id'), primary_key=True)
 
     attendees = db.relationship('User', secondary='attendance', back_populates='event')
     events_attending = db.relationship('Event', secondary='attendance', back_populates='attendees')
@@ -151,24 +155,21 @@ class Event(db.Model, SerializerMixin):
     attendees = db.relationship('User', secondary='attendance', back_populates='events_attending')
     serialize_rules = ('-venues.events', 'attendees.events_attending')
 
+        #) VALIDATIONS
+    # @validates('name')
+    # def validate_name(self, key, value):
+    #     if(1 <= len(value) <= 20):
+    #         return value
+    #     else:
+    #         raise ValueError("Event name must be less than 20 Characters")
 
-    @validates('name')
-    def validate_name(self, key, value):
-        if(1 <= len(value) <= 20):
-            return value
-        else:
-            raise ValueError("Event name must be less than 20 Characters")
-
-    @validates('description')
-    def validate_description(self, key, value):
-        if(1 <= len(value) <= 100):
-            return value
-        else:
-            raise ValueError("Event name must be less than 100 Characters")
+    # @validates('description')
+    # def validate_description(self, key, value):
+    #     if(1 <= len(value) <= 100):
+    #         return value
+    #     else:
+    #         raise ValueError("Event name must be less than 100 Characters")
 
 
-    def __repr__(self):
-        return f'<Event: {self.name}: {self.date_time}, {self.venue}>'
-
-    # # Create a new event
-    # new_event = Event(name="Super Bowl Watch Party", date_time=datetime(2023, 2, 12, 18, 30), location="My House", description="Come watch the Super Bowl!", user=current_user)
+    # def __repr__(self):
+    #     return f'<Event: {self.name}: {self.date_time}, {self.venue}>'
