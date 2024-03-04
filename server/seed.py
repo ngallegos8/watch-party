@@ -1,23 +1,36 @@
-#!/usr/bin/env python3
+# #!/usr/bin/env python3
 
-# Standard library imports
-from random import randint, choice as rc
+# # Standard library imports
+# from random import randint, choice as rc
 
-# Remote library imports
+# # Remote library imports
+# from faker import Faker
+
+# # Local imports
+# from app import app
+# from models import db, User, Venue, Event, Attendance
+
+
+
+# if __name__ == '__main__':
+#     fake = Faker()
+#     with app.app_context():
+#         print("Deleting Customers")
+#         User.query.delete()
+
+#     stephen = User(username="Stephen", password="password")
+#     db.session.add(stephen)
+#     db.session.commit()
+
+from app import app 
+from models import db, User
 from faker import Faker
+from random import randint
+faker = Faker()
+with app.app_context():
+    print("Deleting Customers")
+    User.query.delete()
 
-# Local imports
-from app import app
-from models import db
-
-
-
-
-# # Create a new event
-    # new_event = Event(name="Super Bowl Watch Party", date_time=datetime(2023, 2, 12, 18, 30), location="My House", description="Come watch the Super Bowl!", user=current_user)
-
-if __name__ == '__main__':
-    fake = Faker()
-    with app.app_context():
-        print("Starting seed...")
-        # Seed code goes here!
+    stephen = User(username="Stephen", password="password")
+    db.session.add(stephen)
+    db.session.commit()

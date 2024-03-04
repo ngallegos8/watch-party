@@ -23,18 +23,17 @@ metadata = MetaData(naming_convention={
     })
 
 db = SQLAlchemy(metadata=metadata)
-
-class User(db.Model,SerializerMixin):
+class User(db.Model, SerializerMixin):
     __tablename__ = 'users'
     id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String, unique = True)
-    #) Add the password hash attribute
+    username = db.Column(db.String, unique=True)
+     #) Add the password hash attribute
     _password_hash = db.Column(db.String)
     created_at = db.Column(db.DateTime, server_default=db.func.now())
     updated_at = db.Column(db.DateTime, onupdate=db.func.now())
 
-    events_attending = db.relationship('Event', secondary='attendance', back_populates='attendees')
-    serialize_rules = ('-events_attending.attendees', )
+    attendances = db.relationship('Attendance', back_populates='user')
+    serialize_rules = ('-attendances.attendees', )
 
     #) Create a get method using hybrid property, and bcrypt
     @hybrid_property
@@ -62,18 +61,73 @@ class User(db.Model,SerializerMixin):
 
 
 
+class Event(db.Model, SerializerMixin):
+    __tablename__ = 'events'
+
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String, nullable=False)
+    date_time = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    description = db.Column(db.String)
+    attending_count = db.Column(db.Integer, default=0)
+    venue_id = db.Column(db.Integer, db.ForeignKey('venues.id'))
+
+    venues = db.relationship('Venue', back_populates='events')
+    attendees = db.relationship('Attendance', back_populates='event')  # Change back_populates to 'event'
+
+    serialize_rules = ('-venues.events', '-attendees.event')
+
+    #) Create a get method using hybrid property, and bcrypt
+    @hybrid_property
+    def password_hash(self):
+        return self._password_hash
+    
+    #) Create a setter method to set the password using bcrypt
+    @password_hash.setter
+    def password(self, password):
+        password_hash = bcrypt.generate_password_hash(password.encode("utf-8"))
+        self._password_hash = password_hash.decode("utf-8")
+    
+    #) Create an authentication method to check the password using bcrypt
+    def authenticate(self, password):
+        return bcrypt.check_password_hash(self.password_hash, password.encode("utf-8"))
+
+
+        #) VALIDATIONS
+    # @validates('name')
+    # def validate_name(self, key, value):
+    #     if(1 <= len(value) <= 20):
+    #         return value
+    #     else:
+    #         raise ValueError("Event name must be less than 20 Characters")
+
+    # @validates('description')
+    # def validate_description(self, key, value):
+    #     if(1 <= len(value) <= 100):
+    #         return value
+    #     else:
+    #         raise ValueError("Event name must be less than 100 Characters")
+
+
+    # def __repr__(self):
+    #     return f'<Event: {self.name}: {self.date_time}, {self.venue}>'
+
+
+
+
 class Venue(db.Model, SerializerMixin):
     __tablename__ = 'venues'
     id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String, unique = True)
-    #) Add the password hash attribute
+    username = db.Column(db.String, unique=True)
     _password_hash = db.Column(db.String)
     location = db.Column(db.String, unique=True, nullable=False)
     created_at = db.Column(db.DateTime, server_default=db.func.now())
     updated_at = db.Column(db.DateTime, onupdate=db.func.now())
 
     events = db.relationship('Event', back_populates='venues')
-    serialize_rules = ('-events.venues', )
+    attendees = db.relationship('Attendance', back_populates='venue')  # Change back_populates to 'venue'
+
+    serialize_rules = ('-events.venues', '-attendees.venue')
+
 
     #) Create a get method using hybrid property, and bcrypt
     @hybrid_property
@@ -121,55 +175,20 @@ class Venue(db.Model, SerializerMixin):
     #         return value
     #     else:
     #         raise ValueError("Invalid address")
-        
-    
 
 
 
 class Attendance(db.Model, SerializerMixin):
-    __tablename__ = 'attendees'
+    __tablename__ = 'attendance'
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), primary_key=True)
     venue_id = db.Column(db.Integer, db.ForeignKey('venues.id'), primary_key=True)
+    event_id = db.Column(db.Integer, db.ForeignKey('events.id'), primary_key=True)
 
-    attendees = db.relationship('User', secondary='attendance', back_populates='event')
-    events_attending = db.relationship('Event', secondary='attendance', back_populates='attendees')
+    user = db.relationship('User', back_populates='attendances')
+    venue = db.relationship('Venue', back_populates='attendees')  # Change back_populates to 'attendees'
+    event = db.relationship('Event', back_populates='attendees')
 
-    serialize_rules = ('-attendees.event', 'events_attending.attendees')
-
-
-
-
-class Event(db.Model, SerializerMixin):
-    __tablename__ = 'events'
-
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String, nullable=False)
-    date_time = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
-    description = db.Column(db.String)
-    attending_count = db.Column(db.Integer, default=0)
-    venue_id = db.Column(db.Integer, db.ForeignKey('venues.id'))
-    # STRETCH GOAL: We only care about this if the social aspect of leaving comments (think Meetup or FB events)
-    # user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
-
-    venues = db.relationship('Venue', back_populates='events')
-    attendees = db.relationship('User', secondary='attendance', back_populates='events_attending')
-    serialize_rules = ('-venues.events', 'attendees.events_attending')
-
-        #) VALIDATIONS
-    # @validates('name')
-    # def validate_name(self, key, value):
-    #     if(1 <= len(value) <= 20):
-    #         return value
-    #     else:
-    #         raise ValueError("Event name must be less than 20 Characters")
-
-    # @validates('description')
-    # def validate_description(self, key, value):
-    #     if(1 <= len(value) <= 100):
-    #         return value
-    #     else:
-    #         raise ValueError("Event name must be less than 100 Characters")
+    serialize_rules = ('-user.attendances', '-venue.attendees', '-event.attendees')
 
 
-    # def __repr__(self):
-    #     return f'<Event: {self.name}: {self.date_time}, {self.venue}>'
+
