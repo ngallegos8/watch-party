@@ -100,7 +100,10 @@ class Event(db.Model, SerializerMixin):
 
     venue_id = db.Column(db.Integer, db.ForeignKey('venues.id'))
 
-    # Here, we will add relationships to the User and Venue models
+    # Here, we will add relationships to the User and Venue models with back_populates instead of backref
+    user = db.relationship('User', back_populates='events')
+    venue = db.relationship('Venue', back_populates='events')
+    attendees = db.relationship('User', secondary='attendance', back_populates='events_attending')
 
     # def __repr__(self):
     #     return '<Event %r>' % self.name

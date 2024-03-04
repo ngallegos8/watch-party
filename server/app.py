@@ -3,7 +3,7 @@
 # Standard library imports
 
 # Remote library imports
-from flask import request, session
+from flask import Flask, request, session, make_response
 from flask_restful import Resource
 
 
@@ -118,6 +118,62 @@ class CheckSession(Resource):
     
 api.add_resource(CheckSession, "/check_session")
 
+
+
+class AllEvents(Resource): # This class will be used to GET (read) all events & POST (create) a new event
+
+    def get(self): # GET method to retrieve all events
+        events = Event.order_by('created_at').all() # we could also make this Event.query.all()
+        return [event.to_dict() for event in events], 200 
+    
+    def post(self): # POST method to create a new event
+        data = request.get_json()
+        new_event = Event(
+            name = data["name"],
+            date = data["date"], # should we use date_time here like we did in Models.py? 
+            description = data["description"]
+        )
+        db.session.add(new_event)
+        db.session.commit()
+
+        response = make_response(
+            new_event.to_dict(), 201
+        )
+        return response 
+
+api.add_resource(AllEvents, "/events") # This is the route for the AllEvents class
+
+ 
+class EventByID(Resource): # This class will be used to GET (read) a single event, PATCH (update) a single event, & DELETE a single event
+    def get(self, id):
+        event_dict = Event.query.filter_by(id=id).first().to_dict()
+
+        response = make_response(
+            event_dict, 200
+        )
+        return response
+
+    def patch(self, id):
+        event = Event.query.filter_by(id=id).first()
+        data = request.get_json()
+        # event.name = data["name"]
+        # event.date = data["date"]
+        # event.description = data["description"]
+        for attr in data:
+            setattr(event, attr, data[attr])
+        db.session.add(event)
+        db.session.commit()
+        return make_response(event.to_dict(), 200)
+    
+    def delete(self, id):
+        event = Event.query.filter_by(id=id).first()
+        db.session.delete(event)
+        db.session.commit()
+        return make_response( {'deleted': True}, 204 )
+        
+
+
+api.add_resource(EventByID, "/events/<int:id>") 
 
 
 
