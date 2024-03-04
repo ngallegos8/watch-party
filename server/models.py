@@ -5,6 +5,10 @@ from sqlalchemy import MetaData
 from sqlalchemy_serializer import SerializerMixin
 from sqlalchemy.ext.hybrid import hybrid_property
 from flask_bcrypt import Bcrypt
+import requests
+
+#) NEED TO ADD FOR ADDRESS VALIDATION
+# GOOGLE_MAPS_API_KEY = 'YOUR_GOOGLE_MAPS_API_KEY'
 
 bcrypt = Bcrypt()
 from datetime import datetime
@@ -25,10 +29,11 @@ class User(db.Model,SerializerMixin):
     username = db.Column(db.String, unique = True)
     #) Add the password hash attribute
     _password_hash = db.Column(db.String)
-    # events_attending = db.relationship('Event', secondary='attendance', back_populates='attendees')
-    
     created_at = db.Column(db.DateTime, server_default=db.func.now())
     updated_at = db.Column(db.DateTime, onupdate=db.func.now())
+
+    events_attending = db.relationship('Event', secondary='attendance', back_populates='attendees')
+    serialize_rules = ('-events_attending.attendees', )
 
     #) Create a get method using hybrid property, and bcrypt
     @hybrid_property
@@ -44,6 +49,13 @@ class User(db.Model,SerializerMixin):
     #) Create an authentication method to check the password using bcrypt
     def authenticate(self, password):
         return bcrypt.check_password_hash(self.password_hash, password.encode("utf-8"))
+    
+    @validates('username')
+    def validate_username(self, key, value):
+        if(1 < len(value)):
+            return value
+        else:
+            raise ValueError("Username must be greater than 1 character")
     
 
 
@@ -55,11 +67,11 @@ class Venue(db.Model, SerializerMixin):
     #) Add the password hash attribute
     _password_hash = db.Column(db.String)
     location = db.Column(db.String, unique=True, nullable=False)
-
-    # events = db.relationship('Event', backref='venue', lazy=True)
-    
     created_at = db.Column(db.DateTime, server_default=db.func.now())
     updated_at = db.Column(db.DateTime, onupdate=db.func.now())
+
+    events = db.relationship('Event', back_populates='venues')
+    serialize_rules = ('-events.venues', )
 
     #) Create a get method using hybrid property, and bcrypt
     @hybrid_property
@@ -76,12 +88,51 @@ class Venue(db.Model, SerializerMixin):
     def authenticate(self, password):
         return bcrypt.check_password_hash(self.password_hash, password.encode("utf-8"))
     
+    @validates('username')
+    def validate_username(self, key, value):
+        if(1 < len(value)):
+            return value
+        else:
+            raise ValueError("Username must be greater than 1 character")
+    
+    @staticmethod
+    def is_valid_address(address):
+        google_maps_api_key = 'YOUR_GOOGLE_MAPS_API_KEY'
+        response = requests.get(
+            'https://maps.googleapis.com/maps/api/geocode/json',
+            params={
+                'address': address,
+                'key': google_maps_api_key
+            }
+        )
+        if response.status_code == 200:
+            result = response.json()
+            if result['status'] == 'OK':
+                return True
+        return False
+
+    @validates('location')
+    def validate_location(self, key, value):
+        if self.is_valid_address(value):
+            return value
+        else:
+            raise ValueError("Invalid address")
+        
+    
+
+
 
 class Attendance(db.Model, SerializerMixin):
+    __tablename__ = 'attendees'
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key=True)
     venue_id = db.Column(db.Integer, db.ForeignKey('venue.id'), primary_key=True)
 
-    
+    attendees = db.relationship('User', secondary='attendance', back_populates='event')
+    events_attending = db.relationship('Event', secondary='attendance', back_populates='attendees')
+
+    serialize_rules = ('-attendees.event', 'events_attending.attendees')
+
+
 
 
 class Event(db.Model, SerializerMixin):
@@ -90,45 +141,34 @@ class Event(db.Model, SerializerMixin):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String, nullable=False)
     date_time = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
-    location = db.Column(db.String, nullable=False)
-    description = db.Column(db.Text)
+    description = db.Column(db.String)
     attending_count = db.Column(db.Integer, default=0)
-
-    # These two attributes connect the User model with the Venue model
+    venue_id = db.Column(db.Integer, db.ForeignKey('venues.id'))
     # STRETCH GOAL: We only care about this if the social aspect of leaving comments (think Meetup or FB events)
     # user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
 
-    venue_id = db.Column(db.Integer, db.ForeignKey('venues.id'))
+    venues = db.relationship('Venue', back_populates='events')
+    attendees = db.relationship('User', secondary='attendance', back_populates='events_attending')
+    serialize_rules = ('-venues.events', 'attendees.events_attending')
 
-    # Here, we will add relationships to the User and Venue models
 
-    # def __repr__(self):
-    #     return '<Event %r>' % self.name
+    @validates('name')
+    def validate_name(self, key, value):
+        if(1 <= len(value) <= 20):
+            return value
+        else:
+            raise ValueError("Event name must be less than 20 Characters")
 
-    # @validates('name')
-    # def validate_name(self, key, name):
-    #     assert len(name) > 2
-    #     return name
+    @validates('description')
+    def validate_description(self, key, value):
+        if(1 <= len(value) <= 100):
+            return value
+        else:
+            raise ValueError("Event name must be less than 100 Characters")
 
-    # @validates('location')
-    # def validate_location(self, key, location):
-    #     assert len(location) > 4
-    #     return location
 
-    # @validates('description')
-    # def validate_description(self, key, description):
-    #     assert len(description) > 4
-    #     return description
-
-    # def serialize(self):
-    #     return {
-    #         'id': self.id,
-    #         'name': self.name,
-    #         'date': self.date,
-    #         'location': self.location,
-    #         'description': self.description,
-    #         'user_id': self.user_id
-    #     }
+    def __repr__(self):
+        return f'<Event: {self.name}: {self.date_time}, {self.venue}>'
 
     # # Create a new event
     # new_event = Event(name="Super Bowl Watch Party", date_time=datetime(2023, 2, 12, 18, 30), location="My House", description="Come watch the Super Bowl!", user=current_user)
