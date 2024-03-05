@@ -7,14 +7,14 @@ from flask import Flask, request, session, make_response
 from flask_restful import Resource
 
 # Local imports
-from config import app, db, api
+from config import app, api
 #) ✅ python -c 'import os; print(os.urandom(16))'
 #) Used to hash the session data
 app.secret_key = b'*\x10\x1eI~\n=\xe6\x92\xb4N\xe1\x94\x8b\xea\xb8'
 
 
 # Add your model imports
-#from models import db, User, Venue, Event, Attendance
+from models import db, User, Venue, Event, Attendance
 
 
 # Views go here!
@@ -40,7 +40,7 @@ class SignUpUser(Resource):
     def post(self):
         form_json = request.get_json()
         new_user = User(
-            username = form_json["username"],
+            username = form_json["name"],
             password = form_json["password"]
         )
         db.session.add(new_user)
@@ -54,8 +54,10 @@ class SignUpVenue(Resource):
     def post(self):
         form_json = request.get_json()
         new_venue = Venue(
-            username = form_json["username"],
-            password = form_json["password"]
+            username = form_json["name"],
+            password = form_json["password"],
+            location = form_json["location"],
+            venue_name = form_json["venue_name"]
         )
         db.session.add(new_venue)
         db.session.commit()
@@ -164,13 +166,55 @@ class EventByID(Resource): # This class will be used to GET (read) a single even
         db.session.commit()
         return make_response(event.to_dict(), 200)
     
-    def delete(self, id):
+    def delete(self, id): # This method will delete a single event by id
         event = Event.query.filter_by(id=id).first()
-        db.session.delete(event)
-        db.session.commit()
-        return make_response( {'deleted': True}, 204 )
+        if event:
+            db.session.delete(event)
+            db.session.commit()
+            return {"message": "The event has been successfully deleted."}, 200 # Crafted a response message for successful deletion of an "event", or if event is not found
+        else:
+            return {"message": "Event not found."}, 404
 
 api.add_resource(EventByID, "/events/<int:id>") 
+
+
+class AllVenues(Resource): # This class will be used to GET (read) all venues 
+
+    def get(self): # GET method to retrieve all venues
+        venues = Venue.query.all()
+        return [venue.to_dict() for venue in venues], 200 
+    
+api.add_resource(AllVenues, "/venues") # This is the route for the AllVenues class which gets all venes & lets a user create a new venue 
+
+
+class VenueByID(Resource): # This class will be used to GET (read) a single venue, PATCH (update) a single venue, & DELETE a single venue
+    def get(self, id): # This method will get a single venue by id
+        venue_dict = Venue.query.filter_by(id=id).first().to_dict()
+        response = make_response(
+            venue_dict, 200
+        )
+        return response
+    
+    def patch(self,id): # This method will update a single venue by id
+        venue = Venue.query.filter_by(id=id).first()
+        data = request.get_json()
+        for attr in data:
+            setattr(venue, attr, data[attr])
+        db.session.add(venue)
+        db.session.commit()
+        return make_response(venue.to_dict(), 200)
+
+    def delete(self, id): # This method will delete a single venue by id
+        venue = Venue.query.filter_by(id=id).first()
+        if venue:
+            db.session.delete(venue)
+            db.session.commit()
+            return {"message": "The venue has been successfully deleted."}, 200 # Added response messages for successful deletion of "venue", or if venue is not found 
+        else:
+            return {"message": "Venue not found."}, 404
+
+
+
 
 
 

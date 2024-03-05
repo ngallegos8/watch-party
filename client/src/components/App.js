@@ -5,8 +5,12 @@ import User from './User'
 import Event from './Event'
 import Venue from'./Venue'
 import Signup from'./signup'
+<<<<<<< HEAD
 import Verdersignup from './vendersignup'
 import Home from './Home'
+=======
+import VenueSignup from './venue_signup'
+>>>>>>> fb86dc8dd1011ae5b935c77aef4fca4e165a046a
 
 function App() {
   return(
@@ -24,11 +28,11 @@ function App() {
           <Route exact path="/Event">
             <Event />
           </Route>
-          <Route exact path="/Signup">
+          <Route exact path="/signup/user">
             <Signup />
           </Route>
-          <Route exact path="/vendersignup">
-            <Verdersignup />
+          <Route exact path="/signup/venue">
+            <VenueSignup />
           </Route>
           <Route path="/">
             <Home/>
