@@ -14,7 +14,7 @@ app.secret_key = b'*\x10\x1eI~\n=\xe6\x92\xb4N\xe1\x94\x8b\xea\xb8'
 
 
 # Add your model imports
-#from models import db, User, Venue, Event, Attendance
+from models import db, User, Venue, Event, Attendance
 
 
 # Views go here!
