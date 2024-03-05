@@ -33,6 +33,9 @@ with app.app_context():
 
     stephen = User(username="Stephen", password="password")
     lucy = User( username="lucy", password="dogbone")
+    taki = User( username="taki", password="woof")
+    
     db.session.add(stephen)
     db.session.add(lucy)
+    db.session.add(taki)
     db.session.commit()

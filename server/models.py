@@ -28,7 +28,7 @@ class User(db.Model, SerializerMixin):
     __tablename__ = 'users'
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String, unique=True)
-     #) Add the password hash attribute
+        #) Add the password hash attribute
     _password_hash = db.Column(db.String)
     created_at = db.Column(db.DateTime, server_default=db.func.now())
     updated_at = db.Column(db.DateTime, onupdate=db.func.now())
@@ -40,17 +40,17 @@ class User(db.Model, SerializerMixin):
     @hybrid_property
     def password_hash(self):
         return self._password_hash
-    
+
     #) Create a setter method to set the password using bcrypt
     @password_hash.setter
     def password(self, password):
         password_hash = bcrypt.generate_password_hash(password.encode("utf-8"))
         self._password_hash = password_hash.decode("utf-8")
-    
+
     #) Create an authentication method to check the password using bcrypt
     def authenticate(self, password):
         return bcrypt.check_password_hash(self.password_hash, password.encode("utf-8"))
-    
+
     #) VALIDATIONS
     # @validates('username')
     # def validate_username(self, key, value):
@@ -58,7 +58,7 @@ class User(db.Model, SerializerMixin):
     #         return value
     #     else:
     #         raise ValueError("Username must be greater than 1 character")
-    
+
 
 
 
@@ -189,6 +189,3 @@ class Attendance(db.Model, SerializerMixin):
     event = db.relationship('Event', back_populates='attendees')
 
     serialize_rules = ('-user.attendances', '-venue.attendees', '-event.attendees')
-
-
-
