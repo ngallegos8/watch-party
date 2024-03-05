@@ -8,7 +8,7 @@ from flask_restful import Resource
 
 
 # Local imports
-from config import app, db, api
+from config import app, api
 #) ✅ python -c 'import os; print(os.urandom(16))'
 #) Used to hash the session data
 app.secret_key = b'*\x10\x1eI~\n=\xe6\x92\xb4N\xe1\x94\x8b\xea\xb8'
@@ -41,7 +41,7 @@ class SignUpUser(Resource):
     def post(self):
         form_json = request.get_json()
         new_user = User(
-            username = form_json["username"],
+            username = form_json["name"],
             password = form_json["password"]
         )
         db.session.add(new_user)
@@ -70,6 +70,7 @@ class LogOut(Resource):
     def delete(self):
         if session.get("user_id"):
             session["user_id"] = None
+            session.clear()
         if session.get("venue_id"):
             session["venue_id"] = None
         return {}, 204
@@ -84,7 +85,7 @@ api.add_resource(LogOut, "/logout")
     #) Create a login class that inherits from Resource
     #) Use api.add_resource to add the '/login' path
     #) Build out the post method
-        #) convert the request from json and select the user name sent form the client. 
+        #) convert the request from json and select the user name sent from the client. 
         #) Use the name to query the user with a .filter
         #) If found set the user_id to the session hash
         #) convert the user to_dict and send a response back to the client
