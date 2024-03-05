@@ -6,7 +6,7 @@ const Signup = () => {
             <h1>Signup</h1>
             <form>
                 <formfield>
-                    <label>Enter User Name  </label>
+                    <label>Enter user Name  </label>
                     <input></input><p></p>
 
                 </formfield>

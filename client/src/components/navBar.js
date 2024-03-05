@@ -13,6 +13,8 @@ function NavBar(){
             <Link to="/Venue">  Venue    </Link>
 
             <Link to="/signup">  signup    </Link>
+
+            <Link to="/vendersignup">   vender signup    </Link>
             
             
         </nav>
