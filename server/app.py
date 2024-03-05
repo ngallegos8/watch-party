@@ -6,7 +6,6 @@
 from flask import Flask, request, session, make_response
 from flask_restful import Resource
 
-
 # Local imports
 from config import app, db, api
 #) ✅ python -c 'import os; print(os.urandom(16))'
@@ -15,7 +14,7 @@ app.secret_key = b'*\x10\x1eI~\n=\xe6\x92\xb4N\xe1\x94\x8b\xea\xb8'
 
 
 # Add your model imports
-# from models import db, User, Venue, Event, Attendance
+from models import db, User, Venue, Event, Attendance
 
 
 # Views go here!
@@ -170,8 +169,6 @@ class EventByID(Resource): # This class will be used to GET (read) a single even
         db.session.delete(event)
         db.session.commit()
         return make_response( {'deleted': True}, 204 )
-        
-
 
 api.add_resource(EventByID, "/events/<int:id>") 
 
