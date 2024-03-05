@@ -12,9 +12,9 @@ function NavBar(){
             
             <Link to="/Venue">  Venue    </Link>
 
-            <Link to="/signup/user">  signup    </Link>
+            <Link to="/signup/user">  Create Account    </Link>
 
-            <Link to="/signup/venue">   vender signup    </Link>
+            <Link to="/signup/venue">   Create Venue    </Link>
             
             
         </nav>

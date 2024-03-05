@@ -5,7 +5,7 @@ import User from './User'
 import Event from './Event'
 import Venue from'./Venue'
 import Signup from'./signup'
-import Verdersignup from './vendersignup'
+import VenueSignup from './venue_signup'
 
 function App() {
   return(
@@ -26,8 +26,8 @@ function App() {
           <Route exact path="/signup/user">
             <Signup />
           </Route>
-          <Route exact path="/vendersignup">
-            <Verdersignup />
+          <Route exact path="/signup/venue">
+            <VenueSignup />
           </Route>
           <Route path="/"></Route>
           </Switch>
