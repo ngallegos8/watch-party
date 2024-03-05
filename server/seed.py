@@ -1,6 +1,6 @@
 # #!/usr/bin/env python3
 
-# # Standard library imports
+# # Standard library imports#
 # from random import randint, choice as rc
 
 # # Remote library imports
@@ -12,7 +12,7 @@
 
 
 
-# if __name__ == '__main__':
+# if __name__ == '__main__':p
 #     fake = Faker()
 #     with app.app_context():
 #         print("Deleting Customers")
@@ -32,5 +32,7 @@ with app.app_context():
     User.query.delete()
 
     stephen = User(username="Stephen", password="password")
+    #lucy = User( usermame="lucy", password="dogbone")
     db.session.add(stephen)
+    #db.session.add(lucy)
     db.session.commit()
