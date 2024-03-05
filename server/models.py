@@ -23,6 +23,7 @@ metadata = MetaData(naming_convention={
     })
 
 db = SQLAlchemy(metadata=metadata)
+
 class User(db.Model, SerializerMixin):
     __tablename__ = 'users'
     id = db.Column(db.Integer, primary_key=True)
@@ -110,7 +111,6 @@ class Event(db.Model, SerializerMixin):
 
     # def __repr__(self):
     #     return f'<Event: {self.name}: {self.date_time}, {self.venue}>'
-
 
 
 
