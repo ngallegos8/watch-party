@@ -72,6 +72,9 @@ class Event(db.Model, SerializerMixin):
     attending_count = db.Column(db.Integer, default=0)
     venue_id = db.Column(db.Integer, db.ForeignKey('venues.id'))
 
+    created_at = db.Column(db.DateTime, server_default=db.func.now()) # Added created_at & updated_at in case we want to use them for sorting/filtering based on time or date created
+    updated_at = db.Column(db.DateTime, onupdate=db.func.now())
+
     venues = db.relationship('Venue', back_populates='events')
     attendees = db.relationship('Attendance', back_populates='event')  # Change back_populates to 'event'
 

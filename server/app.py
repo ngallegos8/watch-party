@@ -173,6 +173,29 @@ class EventByID(Resource): # This class will be used to GET (read) a single even
 api.add_resource(EventByID, "/events/<int:id>") 
 
 
+class AllVenues(Resource): # This class will be used to GET (read) all venues & POST (create) a new venue
+
+    def get(self): # GET method to retrieve all venues
+        venues = Venue.query.all()
+        return [venue.to_dict() for venue in venues], 200 
+    
+    def post(self): # POST method to create a new venue
+        data = request.get_json()
+        new_venue = Venue(
+            name = data["name"],
+            location = data["location"]
+        )
+        db.session.add(new_venue)
+        db.session.commit()
+
+        response = make_response(
+            new_venue.to_dict(), 201
+        )
+        return response
+    
+api.add_resource(AllVenues, "/venues") # This is the route for the AllVenues class which gets all venes & lets a user create a new venue 
+
+
 
 if __name__ == '__main__':
     app.run(port=5555, debug=True)
