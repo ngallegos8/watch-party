@@ -1,4 +1,4 @@
-import {Link,useParams} from "react-router-dom";
+import {Link, useParams} from "react-router-dom";
 
 function NavBar(){
     return(
@@ -15,6 +15,10 @@ function NavBar(){
             <Link to="/signup/user">  Create Account    </Link>
 
             <Link to="/signup/venue">   Create Venue    </Link>
+
+            <Link to="/login/user">  User Login    </Link>
+
+            <Link to="/login/venue">   Venue Login    </Link>
             
             
         </nav>

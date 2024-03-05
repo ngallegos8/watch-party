@@ -3,13 +3,13 @@ import React from "react";
 
 
 
-function UserLoggin() {
+function UserLogin() {
 
     return(
         <div>
-            <h1> User Loggin</h1>
+            <h1> User Login</h1>
         </div>
     );
 }
 
-export default UserLoggin;
+export default UserLogin;

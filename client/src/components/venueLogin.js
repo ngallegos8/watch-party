@@ -2,14 +2,13 @@ import React from "react";
 
 
 
-
-function VenueLoggin() {
+function VenueLogin() {
 
     return(
         <div>
-            <h1> Venue Loggin</h1>
+            <h1> Venue Login</h1>
         </div>
     );
 }
 
-export default VenueLoggin;
+export default VenueLogin;

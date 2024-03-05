@@ -6,6 +6,12 @@ import Event from './Event'
 import Venue from'./Venue'
 import Signup from'./signup'
 import VenueSignup from './venue_signup'
+import Home from './Home'
+import UserLogin from './userLogin'
+import VenueLogin from './venueLogin'
+
+
+
 
 function App() {
   return(
@@ -29,6 +35,12 @@ function App() {
           <Route exact path="/signup/venue">
             <VenueSignup />
           </Route>
+          <Route exact path="/login/user">
+            <UserLogin />
+          </Route>
+          <Route exact path="/login/venue">
+            <VenueLogin />
+          </Route>
           <Route path="/">
             <Home/>
           </Route>
@@ -44,4 +56,3 @@ function App() {
 }
 
 export default App
-//
