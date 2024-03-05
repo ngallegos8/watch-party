@@ -3,7 +3,7 @@
 # Standard library imports
 
 # Remote library imports
-from flask import Flask, request, session
+from flask import Flask, request, session, make_response
 from flask_restful import Resource
 
 # Local imports
@@ -166,36 +166,55 @@ class EventByID(Resource): # This class will be used to GET (read) a single even
         db.session.commit()
         return make_response(event.to_dict(), 200)
     
-    def delete(self, id):
+    def delete(self, id): # This method will delete a single event by id
         event = Event.query.filter_by(id=id).first()
-        db.session.delete(event)
-        db.session.commit()
-        return make_response( {'deleted': True}, 204 )
+        if event:
+            db.session.delete(event)
+            db.session.commit()
+            return {"message": "The event has been successfully deleted."}, 200 # Crafted a response message for successful deletion of an "event", or if event is not found
+        else:
+            return {"message": "Event not found."}, 404
 
 api.add_resource(EventByID, "/events/<int:id>") 
 
 
-class AllVenues(Resource): # This class will be used to GET (read) all venues & POST (create) a new venue
+class AllVenues(Resource): # This class will be used to GET (read) all venues 
 
     def get(self): # GET method to retrieve all venues
         venues = Venue.query.all()
         return [venue.to_dict() for venue in venues], 200 
     
-    def post(self): # POST method to create a new venue
-        data = request.get_json()
-        new_venue = Venue(
-            name = data["name"],
-            location = data["location"]
-        )
-        db.session.add(new_venue)
-        db.session.commit()
+api.add_resource(AllVenues, "/venues") # This is the route for the AllVenues class which gets all venes & lets a user create a new venue 
 
+
+class VenueByID(Resource): # This class will be used to GET (read) a single venue, PATCH (update) a single venue, & DELETE a single venue
+    def get(self, id): # This method will get a single venue by id
+        venue_dict = Venue.query.filter_by(id=id).first().to_dict()
         response = make_response(
-            new_venue.to_dict(), 201
+            venue_dict, 200
         )
         return response
     
-api.add_resource(AllVenues, "/venues") # This is the route for the AllVenues class which gets all venes & lets a user create a new venue 
+    def patch(self,id): # This method will update a single venue by id
+        venue = Venue.query.filter_by(id=id).first()
+        data = request.get_json()
+        for attr in data:
+            setattr(venue, attr, data[attr])
+        db.session.add(venue)
+        db.session.commit()
+        return make_response(venue.to_dict(), 200)
+
+    def delete(self, id): # This method will delete a single venue by id
+        venue = Venue.query.filter_by(id=id).first()
+        if venue:
+            db.session.delete(venue)
+            db.session.commit()
+            return {"message": "The venue has been successfully deleted."}, 200 # Added response messages for successful deletion of "venue", or if venue is not found 
+        else:
+            return {"message": "Venue not found."}, 404
+
+
+
 
 
 
