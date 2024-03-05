@@ -11,6 +11,8 @@ function NavBar(){
             <Link to="/Event">  Event    </Link>
             
             <Link to="/Venue">  Venue    </Link>
+
+            <Link to="/signup">  signup    </Link>
             
             
         </nav>
@@ -22,3 +24,4 @@ function NavBar(){
 
 }
 export default NavBar
+//
