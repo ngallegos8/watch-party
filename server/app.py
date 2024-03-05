@@ -54,8 +54,10 @@ class SignUpVenue(Resource):
     def post(self):
         form_json = request.get_json()
         new_venue = Venue(
-            username = form_json["username"],
-            password = form_json["password"]
+            username = form_json["name"],
+            password = form_json["password"],
+            location = form_json["location"],
+            venue_name = form_json["venue_name"]
         )
         db.session.add(new_venue)
         db.session.commit()
