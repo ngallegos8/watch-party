@@ -5,12 +5,7 @@ import User from './User'
 import Event from './Event'
 import Venue from'./Venue'
 import Signup from'./signup'
-<<<<<<< HEAD
-import Verdersignup from './vendersignup'
-import Home from './Home'
-=======
 import VenueSignup from './venue_signup'
->>>>>>> fb86dc8dd1011ae5b935c77aef4fca4e165a046a
 
 function App() {
   return(
