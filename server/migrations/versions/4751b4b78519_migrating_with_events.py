@@ -1,8 +1,8 @@
-"""empty message
+"""migrating with Events
 
-Revision ID: d38541fb37cd
+Revision ID: 4751b4b78519
 Revises: 
-Create Date: 2024-03-05 01:32:01.812316
+Create Date: 2024-03-05 02:13:44.633053
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = 'd38541fb37cd'
+revision = '4751b4b78519'
 down_revision = None
 branch_labels = None
 depends_on = None

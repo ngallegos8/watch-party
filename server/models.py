@@ -5,6 +5,8 @@ from sqlalchemy import MetaData
 from sqlalchemy_serializer import SerializerMixin
 from sqlalchemy.ext.hybrid import hybrid_property
 from flask_bcrypt import Bcrypt
+from datetime import datetime
+import datetime
 
 
 #) NEED TO ADD FOR ADDRESS VALIDATION
