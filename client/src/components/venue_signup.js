@@ -1,9 +1,11 @@
 import {useEffect, useState} from "react";
 
-function Signup() {
+function VenueSignup() {
     const [user, setUser] = useState(null)
     const [name, setName] = useState("")
     const [password, setPassword] = useState("")
+    const [location, setLocation] = useState("")
+    const [venueName, setVenueName] = useState("")
 
     useEffect(() => {
         fetch("/check_session").then((r) => {
@@ -17,18 +19,19 @@ function Signup() {
 
     function handleSignup(e){
         e.preventDefault()
-        fetch("/signup/user", {
+        fetch("/signup/venue", {
             method: "POST",
             headers: {"Content-Type": "application/json"},
             body: JSON.stringify({
                 name: name,
-                password: password
+                password: password,
+                location: location,
+                venue_name: venueName
             })
         })
         .then(r => r.json())
         .then(data => setUser(data))
     }
-
 
     function handleLogout(){
         fetch("/logout", {
@@ -46,9 +49,9 @@ function Signup() {
         )
     }
     else {
-        return (
+        return(
             <>
-                <h1>New User Account</h1>
+                <h1>New Venue</h1>
                 <form onSubmit={handleSignup}>
                         <label>Enter Username</label>
                         <input type="text" value={name} onChange={(e) => setName(e.target.value)}></input><p></p>
@@ -56,11 +59,17 @@ function Signup() {
                         <label>Enter Password</label>
                         <input type="text" value={password} onChange={(e) => setPassword(e.target.value)}></input><p></p>
 
+                        <label>Enter Location</label>
+                        <input type="text" value={location} onChange={(e) => setLocation(e.target.value)}></input><p></p>
+
+                        <label>Enter Venue Name</label>
+                        <input type="text" value={venueName} onChange={(e) => setVenueName(e.target.value)}></input><p></p>
+
                         <button type="submit">Submit</button>
                 </form>
             </>
-        );
-    };
-};
+        )
+    }
+}
 
-export default Signup;
+export default VenueSignup;
