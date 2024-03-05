@@ -6,6 +6,7 @@ import Event from './Event'
 import Venue from'./Venue'
 import Signup from'./signup'
 import Verdersignup from './vendersignup'
+import Home from './Home'
 
 function App() {
   return(
@@ -29,7 +30,9 @@ function App() {
           <Route exact path="/vendersignup">
             <Verdersignup />
           </Route>
-          <Route path="/"></Route>
+          <Route path="/">
+            <Home/>
+          </Route>
           </Switch>
      
         
