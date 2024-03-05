@@ -4,6 +4,7 @@ import NavBar from './navBar'
 import User from './User'
 import Event from './Event'
 import Venue from'./Venue'
+import Signup from'./signup'
 
 function App() {
   return(
@@ -20,6 +21,9 @@ function App() {
           </Route>
           <Route exact path="/Event">
             <Event />
+          </Route>
+          <Route exact path="/Signup">
+            <Signup />
           </Route>
           <Route path="/"></Route>
           </Switch>
