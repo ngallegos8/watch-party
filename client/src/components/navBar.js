@@ -12,9 +12,9 @@ function NavBar(){
             
             <Link to="/Venue">  Venue    </Link>
 
-            <Link to="/signup">  signup    </Link>
+            <Link to="/signup/user">  signup    </Link>
 
-            <Link to="/vendersignup">   vender signup    </Link>
+            <Link to="/signup/venue">   vender signup    </Link>
             
             
         </nav>
@@ -26,4 +26,3 @@ function NavBar(){
 
 }
 export default NavBar
-//

@@ -3,11 +3,11 @@
 # Standard library imports
 
 # Remote library imports
-from flask import Flask, request, session, make_response
+from flask import Flask, request, session
 from flask_restful import Resource
 
 # Local imports
-from config import app, db, api
+from config import app, api
 #) ✅ python -c 'import os; print(os.urandom(16))'
 #) Used to hash the session data
 app.secret_key = b'*\x10\x1eI~\n=\xe6\x92\xb4N\xe1\x94\x8b\xea\xb8'
@@ -40,7 +40,7 @@ class SignUpUser(Resource):
     def post(self):
         form_json = request.get_json()
         new_user = User(
-            username = form_json["username"],
+            username = form_json["name"],
             password = form_json["password"]
         )
         db.session.add(new_user)

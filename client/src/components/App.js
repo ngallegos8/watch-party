@@ -23,7 +23,7 @@ function App() {
           <Route exact path="/Event">
             <Event />
           </Route>
-          <Route exact path="/Signup">
+          <Route exact path="/signup/user">
             <Signup />
           </Route>
           <Route exact path="/vendersignup">
