@@ -1,8 +1,8 @@
-"""initial
+"""added venue_name to Venue model.py
 
-Revision ID: 66be3884a536
+Revision ID: 1d881b08c2e2
 Revises: 
-Create Date: 2024-03-05 13:02:50.315889
+Create Date: 2024-03-05 07:00:11.076217
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '66be3884a536'
+revision = '1d881b08c2e2'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -31,12 +31,14 @@ def upgrade():
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('username', sa.String(), nullable=True),
     sa.Column('_password_hash', sa.String(), nullable=True),
+    sa.Column('venue_name', sa.String(), nullable=True),
     sa.Column('location', sa.String(), nullable=False),
     sa.Column('created_at', sa.DateTime(), server_default=sa.text('(CURRENT_TIMESTAMP)'), nullable=True),
     sa.Column('updated_at', sa.DateTime(), nullable=True),
     sa.PrimaryKeyConstraint('id', name=op.f('pk_venues')),
     sa.UniqueConstraint('location', name=op.f('uq_venues_location')),
-    sa.UniqueConstraint('username', name=op.f('uq_venues_username'))
+    sa.UniqueConstraint('username', name=op.f('uq_venues_username')),
+    sa.UniqueConstraint('venue_name', name=op.f('uq_venues_venue_name'))
     )
     op.create_table('events',
     sa.Column('id', sa.Integer(), nullable=False),
@@ -45,6 +47,8 @@ def upgrade():
     sa.Column('description', sa.String(), nullable=True),
     sa.Column('attending_count', sa.Integer(), nullable=True),
     sa.Column('venue_id', sa.Integer(), nullable=True),
+    sa.Column('created_at', sa.DateTime(), server_default=sa.text('(CURRENT_TIMESTAMP)'), nullable=True),
+    sa.Column('updated_at', sa.DateTime(), nullable=True),
     sa.ForeignKeyConstraint(['venue_id'], ['venues.id'], name=op.f('fk_events_venue_id_venues')),
     sa.PrimaryKeyConstraint('id', name=op.f('pk_events'))
     )
