@@ -27,5 +27,5 @@ const Vendersignup = () => {
 };
 
 
-//
+////
 export default Vendersignup;
