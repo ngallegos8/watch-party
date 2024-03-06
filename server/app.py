@@ -106,7 +106,7 @@ class Login(Resource):
         else:
             return "Invalid Credentials", 401
         
-api.add_resource(Login, "/signin")
+api.add_resource(Login, "/login/user")
 
 class CheckSession(Resource):
     def get(self):
