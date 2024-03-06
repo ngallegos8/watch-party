@@ -3,7 +3,7 @@ import React from "react";
 
 
 
-function Venue() {
+function VenueHome() {
 
     return(
         <div>
@@ -12,4 +12,4 @@ function Venue() {
     )
 }
 
-export default Venue;
+export default VenueHome;
