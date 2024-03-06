@@ -9,11 +9,38 @@ import VenueSignup from './venue_signup'
 import Home from './Home'
 import UserLogin from './userLogin'
 import VenueLogin from './venueLogin'
+//import UserLogin from './userLogin'
 
 
 
 
 function App() {
+  const [user, setUser] = useState(null);
+  const [venue, setVenue] = useState(null);
+
+  useEffect(() => {
+
+    fetch("/check_session").then((r) => {
+      if (r.ok) {
+        r.json().then((user) => setUser(user));
+      }
+    });
+  }, []);
+
+  if (!user) return <UserLogin onLogin={setUser} />;
+
+  // useEffect(() => {
+
+  //   fetch("/check_session").then((r) => {
+  //     if (r.ok) {
+  //       r.json().then((venue) => setVenue(venue));
+  //     }
+  //   });
+  // }, []);
+
+  // if (!venue) return <VenueLogin onLogin={setVenue} />;
+
+ 
   return(
     <BrowserRouter>
       <NavBar/>
@@ -36,10 +63,10 @@ function App() {
             <VenueSignup />
           </Route>
           <Route exact path="/login/user">
-            <UserLogin />
+            <UserLogin onLogin={setUser}/>
           </Route>
           <Route exact path="/login/venue">
-            <VenueLogin />
+            <VenueLogin onLogin={setVenue}/>
           </Route>
           <Route path="/">
             <Home/>
