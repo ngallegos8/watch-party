@@ -28,7 +28,7 @@ def index():
 def check_session():
     if session.get("user_id") is None:
         session["user_id"] = None
-    if session.get("venue_id") is None:
+    elif session.get("venue_id") is None:
         session["venue_id"] = None
     else:
         print("User is logged in")
