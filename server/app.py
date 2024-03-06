@@ -96,17 +96,36 @@ class Login(Resource):
         username = form_json["username"]
         password = form_json["password"]
         user = User.query.filter(User.username == username).first()
-        venue = Venue.query.filter(Venue.username == username).first()
+        #venue = Venue.query.filter(Venue.username == username).first()
         if user and user.authenticate(password):
             session["user_id"] = user.id
             return user.to_dict(), 200
-        elif venue and venue.authenticate(password):
+        #elif venue and venue.authenticate(password):
+        #    session["venue_id"] = venue.id
+        #    return venue.to_dict(), 200
+        else:
+            return "Invalid Credentials", 401
+        
+api.add_resource(Login, "/login/user")
+
+
+class VenueLogin(Resource):
+    def post(self):
+        form_json = request.get_json()
+        username = form_json["username"]
+        password = form_json["password"]
+        #user = User.query.filter(Venue.username == username).first()
+        venue = Venue.query.filter(Venue.username == username).first()
+        #if user and user.authenticate(password):
+        #    session["user_id"] = user.id
+        #    return user.to_dict(), 200
+        if venue and venue.authenticate(password):
             session["venue_id"] = venue.id
             return venue.to_dict(), 200
         else:
             return "Invalid Credentials", 401
         
-api.add_resource(Login, "/login/user")
+api.add_resource(VenueLogin, "/login/venue")
 
 class CheckSession(Resource):
     def get(self):
